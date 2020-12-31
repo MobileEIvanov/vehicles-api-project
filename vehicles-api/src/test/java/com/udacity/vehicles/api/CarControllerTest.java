@@ -5,9 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -88,6 +86,24 @@ public class CarControllerTest {
     }
 
     /**
+     * Tests for successful update of car in the system
+     * @throws Exception when car creation fails in the system
+     */
+    @Test
+    public void updateCar() throws Exception {
+
+        Car updatedCar = getCar();
+        Long vehicleId = 1l;
+
+        mvc.perform(
+            put("/cars/{vehicleId}", vehicleId)
+                .content(json.write(updatedCar).getJson())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(status().is2xxSuccessful());
+    }
+
+    /**
      * Tests if the read operation appropriately returns a list of vehicles.
      * @throws Exception if the read operation of the vehicle list fails
      */
@@ -146,6 +162,9 @@ public class CarControllerTest {
 
         verify(carService, Mockito.times(1)).delete(vehicleId);
     }
+
+
+
 
     /**
      * Creates an example Car object for use in testing.

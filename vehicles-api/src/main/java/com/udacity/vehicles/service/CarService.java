@@ -7,6 +7,7 @@ import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -103,7 +104,9 @@ public class CarService {
             return repository.findById(car.getId())
                 .map(carToBeUpdated -> {
                     carToBeUpdated.setDetails(car.getDetails());
+                    carToBeUpdated.setCondition(car.getCondition());
                     carToBeUpdated.setLocation(car.getLocation());
+                    carToBeUpdated.setModifiedAt(LocalDateTime.now());
                     return repository.save(carToBeUpdated);
                 }).orElseThrow(CarNotFoundException::new);
         }
