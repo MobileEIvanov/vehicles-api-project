@@ -9,6 +9,7 @@ import com.udacity.vehicles.domain.car.CarRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,22 @@ public class CarService {
      * @return a list of all vehicles in the CarRepository
      */
     public List<Car> list() {
-        return repository.findAll();
+
+        List<Car> carList = repository.findAll();
+
+        List<Car> updatedDetails = carList
+            .stream()
+            .peek(
+                car -> {
+                    Location location = mapsClient.getAddress(car.getLocation());
+                    String price = priceClient.getPrice(car.getId());
+                    car.setLocation(location);
+                    car.setPrice(price);
+                }
+
+            ).collect(Collectors.toList());
+
+        return updatedDetails;
     }
 
     /**
@@ -87,7 +103,6 @@ public class CarService {
         Location vehicleLocation = this.mapsClient.getAddress(car.getLocation());
         car.setLocation(vehicleLocation);
         log.info("Location {} extracted for vehicle: {}", vehicleLocation, car);
-
 
 
         return car;
